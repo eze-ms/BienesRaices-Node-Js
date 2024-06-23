@@ -1,11 +1,25 @@
 import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad } from '../models/index.js'
 
-const admin = ( req, res ) => {
-    res.render('propiedades/admin', {
-        pagina: 'Mis propiedades'
+const admin = async (req, res) => {
+    const { id } = req.usuario;
+
+    const propiedades = await Propiedad.findAll({
+        where: {
+            usuarioId: id 
+        },
+        //Tabla relacionada
+        include: [
+            { model: Categoria, as: 'categoria' },
+            { model: Precio, as: 'precio' }
+        ]
     })
-}
+
+    res.render('propiedades/admin', {
+        pagina: 'Mis propiedades',
+        propiedades,
+    })
+};
 
 //Formulario para crear nueva propiedad
 const crear = async(req, res) => {
@@ -22,13 +36,13 @@ const crear = async(req, res) => {
         precios,
         datos: {}
     })
-}
+};
 
 const guardar = async(req, res) => {
      //Validación 
-     let resultado = validationResult(req)
+    let resultado = validationResult(req)
 
-     if(!resultado.isEmpty()) {
+    if(!resultado.isEmpty()) {
 
         //Consultar modelo de precios y categorías
         const [categorias, precios] = await Promise.all([
@@ -44,10 +58,10 @@ const guardar = async(req, res) => {
             errores: resultado.array(),
             datos: req.body
         })
-     }
+    }
 
-     // Crear registro
-    const { titulo, descripcion, habitaciones, parking, wc, calle, lat, lng, imagen, createAt, updatedAt, precio, categoria  } = req.body
+    // Crear un registro
+    const { titulo, descripcion, habitaciones, parking, wc, calle, lat, lng, precio, categoria  } = req.body
     
     const { id: usuarioId } = req.usuario
 
@@ -61,9 +75,6 @@ const guardar = async(req, res) => {
             calle,
             lat,
             lng,
-            imagen,
-            createAt,
-            updatedAt,
             precioId: precio,
             categoriaId: categoria,
             usuarioId,
@@ -76,7 +87,7 @@ const guardar = async(req, res) => {
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 const agregarImagen = async(req, res) => {
 
@@ -101,7 +112,7 @@ const agregarImagen = async(req, res) => {
         csrfToken: req.csrfToken(),
         propiedad
     })
-}
+};
 
 const almacenarImagen = async (req, res, next) => {
 
@@ -138,6 +149,100 @@ const almacenarImagen = async (req, res, next) => {
         console.log(error);
         res.redirect('/mis-propiedades') // Redirige a mis-propiedades en caso de error
     }
+};
+
+const editar = async (req, res) => {
+
+    const { id } = req.params
+
+    //Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id)
+
+    if(!propiedad){
+        return res.redirect('/mis-propiedades')
+    }
+
+    // Revisar que quien visita la URL, es quien creó la propiedad
+    if(propiedad.usuarioId.toString() !== req.usuario.id.toString() ){
+        return res.redirect('/mis-propiedades')
+    }
+
+    //Consultar modelo de precios y categorías
+    const [categorias, precios] = await Promise.all([
+        Categoria.findAll(),
+        Precio.findAll()
+    ])
+
+    res.render('propiedades/editar', {
+        pagina: `Editar Propiedad: ${propiedad.titulo}`,
+        csrfToken: req.csrfToken(), 
+        categorias,
+        precios,
+        datos: propiedad
+    })
+}
+
+const guardarCambios = async (req, res) => {
+
+    //Verificar la validación 
+    let resultado = validationResult(req)
+
+    if(!resultado.isEmpty()) {
+
+        //Consultar modelo de precios y categorías
+        const [categorias, precios] = await Promise.all([
+            Categoria.findAll(),
+            Precio.findAll()
+        ])
+
+        return res.render('propiedades/editar', {
+            pagina: 'Editar Propiedad',
+            csrfToken: req.csrfToken(), 
+            categorias,
+            precios,
+            errores: resultado.array(),
+            datos: req.body
+        })
+    }
+
+    const { id } = req.params
+
+    //Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id)
+
+    if(!propiedad){
+        return res.redirect('/mis-propiedades')
+    }
+
+    // Revisar que quien visita la URL, es quien creó la propiedad
+    if(propiedad.usuarioId.toString() !== req.usuario.id.toString() ){
+        return res.redirect('/mis-propiedades')
+    }
+
+    // Reescribir el objeto y actualizarlo
+    try {
+
+        // Crear un registro
+        const { titulo, descripcion, habitaciones, parking, wc, calle, lat, lng, precio, categoria  } = req.body
+
+        propiedad.set({
+            titulo,
+            descripcion,
+            habitaciones,
+            parking,
+            wc,
+            calle,
+            lat,
+            lng,
+            precioId: precio,
+            categoriaId: categoria
+        })
+        await propiedad.save();
+        res.redirect('/mis-propiedades')
+        
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export {
@@ -145,5 +250,7 @@ export {
     crear,
     guardar,
     agregarImagen,
-    almacenarImagen
+    almacenarImagen,
+    editar,
+    guardarCambios
 }
