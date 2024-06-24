@@ -19,15 +19,27 @@ Dropzone.options.imagen = {
     init: function() { // Permite escribir sobre el objeto de dropzone
         const dropzone = this
         const btnPublicar = document.querySelector('#publicar')
+        const progressBar = document.querySelector('.progress-bar');
+        const progressContainer = document.querySelector('.progress');
 
         btnPublicar.addEventListener('click', function() {
             dropzone.processQueue()
+        })
+
+        dropzone.on('uploadprogress', function(file, progress) {
+            progressContainer.style.display = 'block';
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
         })
 
         dropzone.on('queuecomplete', function() {
             if(dropzone.getActiveFiles().length == 0){
                 window.location.href = '/mis-propiedades'
             }
+        })
+
+        dropzone.on('complete', function() {
+            progressContainer.style.display = 'none';
         })
     }
 }
