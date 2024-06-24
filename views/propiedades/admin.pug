@@ -24,7 +24,7 @@ block contenido
                                 div(class="sm:w-1/4 md:w-1/6") 
                                     img(src=`uploads/${propiedad.imagen}`, alt=`Imagen propiedad ${propiedad.titulo}` class="w-full block")
                                 div(class="sm:w-2/4 md:w-3/6 lg:w-4/6 space-y-3")
-                                    a(class="block text-2xl font-bold text-indigo-500 truncate" href="#")= propiedad.titulo
+                                    a(class="block text-2xl font-bold text-indigo-500 truncat hover:underline" href=`/propiedad/${propiedad.id}`)= propiedad.titulo
                                     p(class="text-sm text-black font-bold")= propiedad.categoria.nombre 
                                     p(class="text-sm text-grey-500 font-bold flex items-center") 
                                         svg(
@@ -51,7 +51,8 @@ block contenido
                                         )
                                     a(
                                         href=`/propiedades/editar/${propiedad.id}` 
-                                        class="text-center px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-indigo-100 text-indigo-800"
+                                        class="text-center px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-indigo-100 text-indigo-800 hover:bg-indigo-500 hover:text-indigo-100"
+
                                     )
                                         | Editar
 
@@ -59,7 +60,7 @@ block contenido
                                         input(type="hidden" name="_csrf" value=csrfToken)
                                         input(
                                             type="submit", 
-                                            class="w-full px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-red-100 text-red-800"
+                                            class="w-full px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-red-100 text-red-800 hover:bg-red-500 hover:text-red-100"
                                             value="Eliminar"
                                         )
         else 
