@@ -1,9 +1,20 @@
-header.bg-yellow-300.p-4
+header.bg-yellow-300.p-0.h-12.flex
     .container.mx-auto.flex.justify-between.items-center
         h1.text-2xl.text-black.font-extrabold.text-center Bienes
             span.font-normal Raices
         
-        nav(class="my-5 text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden")
-            a(class="text-gray-800" href="") Mis Propiedades
-            a(class="text-gray-800 ml-4" href="") Mi Perfil
-            a(class="bg-gray-800 py-2 px-4 ml-4 rounded-lg hover:bg-gray-700" href="") Cerrar Sesión
+        nav(class="text-sm md:flex md:items-center md:gap-3 font-medium text-white hidden")
+            a(class="text-gray-800 p-4 border-b-2 border-transparent hover:bg-white hover:text-customPink hover:border-customPink border-solid" href="/auth/registro") Crear Cuenta
+            a(class="text-gray-800 p-4 border-b-2 border-transparent hover:bg-white hover:text-customPink hover:border-customPink border-solid" href="/auth/login") Iniciar Sesión
+            
+
+div(class="bg-yellow-400 py-4 hidden lg:block")
+    div(class="container mx-auto flex justify-between")
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Casas
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Pisos
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Locales 
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Oficinas 
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Garajes 
+        a(href="/caregorias/1" class="text-sm font-medium uppercase text-gray-800") Terrenos 
+
+            

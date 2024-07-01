@@ -1,27 +1,63 @@
 import { unlink } from 'node:fs/promises'
 import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad } from '../models/index.js'
-import { log } from 'node:console';
 
 const admin = async (req, res) => {
-    const { id } = req.usuario;
+    // Leer Querystring para obtener la página actual
+    const { pagina: paginaActual } = req.query
+    
+    // Expresión regular para validar el número de página
+    const expresion = /^[1-9]$/
 
-    const propiedades = await Propiedad.findAll({
-        where: {
-            usuarioId: id 
-        },
-        //Tabla relacionada
-        include: [
-            { model: Categoria, as: 'categoria' },
-            { model: Precio, as: 'precio' }
-        ]
-    })
+    // Si la página no es válida, redirigir a la primera página
+    if (!expresion.test(paginaActual)) {
+        return res.redirect('/mis-propiedades?pagina=1')
+    }
 
-    res.render('propiedades/admin', {
-        pagina: 'Mis propiedades',
-        propiedades,
-        csrfToken: req.csrfToken(),
-    })
+    try {
+        const { id } = req.usuario;
+
+        // Definir límite y offset para la paginación
+        const limit = 5
+        const offset = ((paginaActual * limit) - limit)
+
+        // Consultar propiedades del usuario paginadas, incluyendo categorías y precios
+        const [propiedades, total] = await Promise.all([
+            Propiedad.findAll({
+                limit: limit,
+                offset,
+                where: {
+                    usuarioId: id 
+                },
+                include: [
+                    { model: Categoria, as: 'categoria' },
+                    { model: Precio, as: 'precio' }
+                ]
+            }),
+            Propiedad.count({
+                where: {
+                    usuarioId: id
+                }
+            })
+        ])
+        
+
+        // Renderizar la vista 'propiedades/admin' con los datos obtenidos
+        res.render('propiedades/admin', {
+            pagina: 'Mis propiedades',
+            propiedades,
+            total,
+            csrfToken: req.csrfToken(),
+            paginas: Math.ceil(total / limit),
+            paginaActual: Number(paginaActual),
+            total, 
+            offset,
+            limit
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 //Formulario para crear nueva propiedad
