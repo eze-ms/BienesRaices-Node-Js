@@ -9,7 +9,7 @@ router.get('/', inicio)
 //Categorías
 router.get('/categorias/:id', categoria)
 
-//Página 404
+//Página 404 
 router.get('/404', noEncontrado)
 
 //Buscador
