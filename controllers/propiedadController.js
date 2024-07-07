@@ -1,6 +1,7 @@
 import { unlink } from 'node:fs/promises'
 import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad } from '../models/index.js'
+import { esVendedor } from '../helpers/index.js';
 
 const admin = async (req, res) => {
     // Leer Querystring para obtener la página actual
@@ -313,8 +314,6 @@ const mostrarPropiedad = async (req, res) => {
 
     const {id } = req.params 
 
-    
-
     //Comprobar que la propiedad exista
     const propiedad = await Propiedad.findByPk(id, {
         include : [
@@ -331,7 +330,8 @@ const mostrarPropiedad = async (req, res) => {
         propiedad, 
         pagina: propiedad.titulo,
         csrfToken: req.csrfToken(),
-        usuario: req.usuario
+        usuario: req.usuario,
+        esVendedor: esVendedor(req.usuario?.id, propiedad.usuarioId)
     })
 }
 

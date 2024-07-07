@@ -5,3 +5,7 @@
 .leaflet-container a {
     color: #000;
 }
+
+.placeholder-small::placeholder {
+    font-size: 0.75rem; /* Esto es equivalente a text-xs */
+  }

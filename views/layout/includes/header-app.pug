@@ -10,7 +10,7 @@ header.bg-yellow-300.p-0.h-12.flex
             
 
 div(class="bg-yellow-400 hidden lg:block")
-    div(class="container mx-auto flex justify-between")
+    div(class="container mx-auto flex justify-between py-1")
         nav(class="flex gap-4 items-center") 
             <a href="/categorias/1" class="text-gray-800 p-2 border-b-2 border-transparent hover:text-customPink hover:border-customPink border-solid transition-colors duration-200 ease-in-out">Casas</a>
             <a href="/categorias/2" class="text-gray-800 p-2 border-b-2 border-transparent hover:text-customPink hover:border-customPink border-solid transition-colors duration-200 ease-in-out">Pisos</a>
@@ -21,6 +21,6 @@ div(class="bg-yellow-400 hidden lg:block")
         
         form(action="/buscador" method="POST" class="flex gap-3 items-center")
                 input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="text" id="termino" name="termino" placeholder="Buscar propiedades" class="p-3 rounded-md shadow focus:outline-none")
-                input(type="submit" class="bg-customPink hover:bg-customPinkHover rounded-lg text-white uppercase font-bold p-2 cursor-pointer text-sm transition-colors duration-200 ease-in-out" value="Buscar")
+                input(type="text" id="termino" name="termino" placeholder="Buscar propiedades..." class="pl-2 p-1 rounded-sm shadow focus:outline-none placeholder-small")
+                input(type="submit" class="bg-customPink hover:bg-customPinkHover rounded-sm text-white font-medium p-1.5 cursor-pointer text-sm transition-colors duration-200 ease-in-out" value="Buscar")
     
