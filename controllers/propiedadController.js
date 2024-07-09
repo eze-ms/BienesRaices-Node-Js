@@ -2,6 +2,7 @@ import { unlink } from 'node:fs/promises'
 import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad, Mensaje, Usuario } from '../models/index.js'
 import { esVendedor, formatearFecha } from '../helpers/index.js';
+import { log } from 'node:console';
 
 const admin = async (req, res) => {
     // Leer Querystring para obtener la página actual
@@ -310,6 +311,31 @@ const eliminar = async (req, res) => {
     res.redirect('/mis-propiedades')
 }
 
+// Modificar el estado de una propiedad 
+const cambiarEstado = async (req, res) => {
+    const { id } = req.params
+
+    //Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id)
+
+    if(!propiedad){
+        return res.redirect('/mis-propiedades')
+    }
+
+    // Revisar que quien visita la URL, es quien creó la propiedad
+    if(propiedad.usuarioId.toString() !== req.usuario.id.toString() ){
+        return res.redirect('/mis-propiedades')
+    }
+
+    // Actualizar 
+    propiedad.publicado = !propiedad.publicado
+
+    await propiedad.save()
+    res.json({
+        resultado: 'ok'
+    })
+}
+
 // Muestra una propiedad
 const mostrarPropiedad = async (req, res) => {
 
@@ -323,7 +349,7 @@ const mostrarPropiedad = async (req, res) => {
         ]
     })
 
-    if(!propiedad) {
+    if(!propiedad || !propiedad.publicado) {
         return res.redirect('/404')
     }
 
@@ -427,6 +453,7 @@ export {
     editar,
     guardarCambios,
     eliminar,
+    cambiarEstado,
     mostrarPropiedad,
     enviarMensaje,
     verMensaje,
