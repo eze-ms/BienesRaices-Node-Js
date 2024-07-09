@@ -46,13 +46,22 @@ block contenido
                     if !esVendedor
 
                         h3(class="text-2xl text-center my-10 font-bold text-gray-800") Vendedor
-                        if usuario
+                        if enviado 
+                            p(class="p-2 text-center bg-green-100 text-green-600 uppercase font-bold") Mensaje enviado correctamente
+
+                        else if usuario
+                            
+                            if errores
+                                div(class="max-w-md mx-auto my-10")
+                                    each error in errores
+                                        p(style="background-color: #ef5548; color: #fff;" class="uppercase text-xs text-center p-2 mb-2 py-2 font-bold rounded")= error.msg
+                            
                             form(method="POST") 
                                 input(type="hidden" name="_csrf" value= csrfToken)
 
                                 div(class="space-y-5")
                                     label(for="mensaje") Mensaje 
-                                    textarea(id="mensaje" name="mensaje" class="w-full py-2 border border-gray-300 rounded-lg shadow placeholder-gray-400") 
+                                    textarea(id="mensaje" name="mensaje" class="w-full px-2 py-2 border border-gray-300 rounded-lg shadow placeholder-gray-400 placeholder-small pl-2" placeholder="Escribe un mensaje...")
                                     input(type="submit" value="Enviar mensaje" class="w-full rounded bg-customPink p-4 hover:bg-customPinkHover text-white font-bold py-3 cursor-pointer transition-colors duration-200 ease-in-out" )
                                     
                         else

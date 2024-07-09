@@ -9,7 +9,7 @@ block contenido
         if errores
             div(class="max-w-md mx-auto my-10")
                 each error in errores
-                    p(style="background-color: #ef5548; color: #fff;" class="uppercase text-xs text-center p-2 mb-2 py-2 font-bold rounded-lg")= error.msg
+                    p(style="background-color: #ef5548; color: #fff;" class="uppercase text-xs text-center p-2 mb-2 py-2 font-bold rounded")= error.msg
 
         div.mt-8.mx-auto.max-w-md
             div.bg-white.py-8.px-4.shadow

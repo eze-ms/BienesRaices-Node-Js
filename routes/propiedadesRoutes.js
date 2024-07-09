@@ -1,6 +1,6 @@
 import express from "express"
 import { body } from "express-validator"
-import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad } from '../controllers/propiedadController.js'
+import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad, enviarMensaje, verMensaje } from '../controllers/propiedadController.js'
 import protegerRuta from "../middelware/protegerRuta.js"
 import upload from "../middelware/subirImagen.js"
 import identificarUsuario from "../middelware/identificarUsuario.js"
@@ -66,6 +66,18 @@ router.post('/propiedades/eliminar/:id',
 router.get('/propiedad/:id',
     identificarUsuario,
     mostrarPropiedad
+)
+
+// Almacenar los mensajes enviados
+router.post('/propiedad/:id',
+    identificarUsuario,
+    body('mensaje').isLength({min: 10}).withMessage('El mensaje no puede estar vacío o es muy corto'),
+    enviarMensaje
+)
+
+router.get('/mensaje/:id',
+    protegerRuta,
+    verMensaje
 )
 
 export default router
