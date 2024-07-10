@@ -2,6 +2,8 @@ import { Sequelize } from "sequelize";
 import dotenv from 'dotenv';
 dotenv.config({path: '.env'})
 
+console.log('DB Config:', process.env.BD_NOMBRE, process.env.BD_USER, process.env.BD_PASS, process.env.BD_HOST, process.env.BD_PORT);
+
 const db = new Sequelize(process.env.BD_NOMBRE, process.env.BD_USER, process.env.BD_PASS ?? '', {
     host: process.env.BD_HOST,
     port: process.env.BD_PORT,
@@ -17,6 +19,10 @@ const db = new Sequelize(process.env.BD_NOMBRE, process.env.BD_USER, process.env
     },
     operatorsAliases: false
 });
+
+db.authenticate()
+    .then(() => console.log('Conexión correcta a la bbdd'))
+    .catch(err => console.error('Error al conectar a la bbdd:', err));
 
 export default db;
 
